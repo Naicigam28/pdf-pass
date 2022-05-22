@@ -1,53 +1,71 @@
+import os
 from Handlers.PDF import PDF
 import tkinter as tk
 from tkinter import filedialog as fd
 from tkinter.messagebox import showinfo
-from tkPDFViewer import tkPDFViewer as pdfViewer 
-window = tk.Tk()
-window.title("pdf-pass")
+from tkPDFViewer import tkPDFViewer as pdfViewer
+import tkinter as tk
+import tkinter.simpledialog
+from datetime import datetime, timedelta,date
+from tkinter import messagebox
+class App(tk.Tk):
+    def __init__(self):
+        super().__init__()
+        self.title("pdf-pass")
+        self.currentPDF = None
+        self.geometry('800x800')
+        self.setPassButton = tk.Button(self,
+            text="Password protect",
+            command=self.setPassword
+        )
 
-window.resizable(False, False)
-window.geometry('800x800')
+        self.selectFileButton = tk.Button(self,
+            text="Select File",
+            command=self.select_file
+        )
 
-greeting = tk.Label(text="Hello, Tkinter")
-currentPDF=None
+        self.selectFileButton.pack()
 
+    def previewFile(self, filename):
+        # creating object of ShowPdf from tkPDFViewer.
+        v1 = pdfViewer.ShowPdf()
+        v2 = v1.pdf_view(self,
+                         pdf_location=filename,
+                         width=600, height=500)
+        v2.pack()
 
-  
-# Initializing tk 
-def fileView(filename):
-# creating object of ShowPdf from tkPDFViewer. 
-    v1 = pdfViewer.ShowPdf() 
+ 
     
-    # Adding pdf location and width and height. 
-    v2 = v1.pdf_view(window, 
-                    pdf_location = filename,  
-                    width = 600, height = 500)
+   
+    def setPDF(self, filename):
+        self.filePath=filename
+        self.currentPDF = PDF(filename)
+        self.previewFile(filename)
 
-    v2.pack()
-def setPDF(filename):
-    currentPDF=PDF(filename)
-    fileView(filename)
-    
-def select_file():
-    filetypes = (
-        ('text files', '*.pdf'),
-        ('All files', '*.*')
-    )
+    def select_file(self):
+        filetypes = (
+            ('text files', '*.pdf'),
+            ('All files', '*.*')
+        )
 
-    filename = fd.askopenfilename(
-        title='Open a file',
-        initialdir='.',
-        filetypes=filetypes)
-    if(filename):
-        setPDF(filename)
+        filename = fd.askopenfilename(
+            title='Open a file',
+            initialdir='.',
+            filetypes=filetypes)
+        if(filename):
+            self.setPassButton.pack()
+            self.setPDF(filename)
 
 
+    def setPassword(self):
+        
+        password = tkinter.simpledialog.askstring(
+            "Password", "Enter password:", show='*',parent=self)
+        self.currentPDF.encrypt(password)
+        
+        messagebox.showinfo('No', 'Quit has been cancelled',master=self)
 
-button = tk.Button(
-    text="Select File",
-    command=select_file
-)
 
-button.pack()
-window.mainloop()
+if __name__ == "__main__":
+    app = App()
+    app.mainloop()

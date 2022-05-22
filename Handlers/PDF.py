@@ -1,5 +1,6 @@
+import os
 import PyPDF2
-
+from datetime import datetime
 
 class PDF:
     def __init__(self,filePath):
@@ -14,7 +15,11 @@ class PDF:
             self.Writer.addPage(pdfReader.getPage(pageNum))
 
     def encrypt(self,password):
+        now = datetime.now()
+        date_time = now.strftime("%Y-%m-%d")
+        fileName=f"protected_{date_time}_{os.path.basename(self.file.name)}"
         self.Writer.encrypt(password)
-        resultPdf = open('encrypted_output.pdf', 'wb')
+        resultPdf = open(fileName, 'wb')
         self.Writer.write(resultPdf)
         resultPdf.close()
+        os.system(resultPdf.name)

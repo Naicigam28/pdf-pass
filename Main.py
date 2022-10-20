@@ -63,7 +63,7 @@ class App(tk.Tk):
             "Password", "Enter password:", show='*',parent=self)
         self.currentPDF.encrypt(password)
         
-        messagebox.showinfo('No', 'Quit has been cancelled',master=self)
+        messagebox.showinfo('OK', 'Saved to',master=self)
 
 
 if __name__ == "__main__":

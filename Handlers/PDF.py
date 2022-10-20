@@ -17,7 +17,9 @@ class PDF:
     def encrypt(self,password):
         now = datetime.now()
         date_time = now.strftime("%Y-%m-%d")
+        self.protectedfileName
         fileName=f"protected_{date_time}_{os.path.basename(self.file.name)}"
+        self.protectedFileName=fileName
         self.Writer.encrypt(password)
         resultPdf = open(fileName, 'wb')
         self.Writer.write(resultPdf)
